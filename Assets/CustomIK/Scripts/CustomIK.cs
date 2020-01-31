@@ -45,6 +45,7 @@ public class CustomIK : MonoBehaviour {
 		Vector3 jointPosition = adjacent + Vector3.Cross ((targetIK.position - rootBone.position).normalized, elbowHeight)*triangleHeight;
 		float angleElbow = Vector3.Angle(rootBone.position - jointPosition, targetIK.position - jointPosition);
 		float angleUpperArm = Vector3.Angle(jointPosition - rootBone.position, targetIK.position - rootBone.position);
+		
 		float targetAngleV; 
 		
 		if(rootBone.position.y >= targetIK.position.y)
@@ -55,6 +56,7 @@ public class CustomIK : MonoBehaviour {
 		{
 			targetAngleV = -Vector3.Angle(Vector3.forward, targetIK.position - rootBone.position);
 		}
+
 		float targetAngleH;
 
 		#endregion
