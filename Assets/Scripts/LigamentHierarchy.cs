@@ -5,7 +5,7 @@ using UnityEngine;
 public class LigamentHierarchy : MonoBehaviour
 {
 	[SerializeField]
-	private PlaceholderLigament m_RootLigament;
+	private PlaceholderLigament m_RootLigament = null;
 
 	public float CalculateDistanceFromRoot(PlaceholderLigament Ligament)
 	{
