@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Assertions;
 
 public class CreatureBuilder : MonoBehaviour
 {
@@ -43,11 +44,32 @@ public class CreatureBuilder : MonoBehaviour
         {
             // Add at specific point so we can have branches and T junctions.
             Transform objectHit = hit.transform;
-            if (objectHit.TryGetComponent(out LigamentChain ligChain) || objectHit.TryGetComponent(out Head head))
+
+            bool hitHead = objectHit.TryGetComponent(out Head head);
+            bool hitLimb = objectHit.TryGetComponent(out LimbIdentity limbIdentity);
+
+            if(hitHead)
             {
-                Transform newLigament = Instantiate(m_boneBase, hit.point, Quaternion.identity);
-                newLigament.SetParent(objectHit);
+                Transform newLigament = CreateNewLigament(hit);
+                MakeLimbRoot(newLigament);
             }
+
+            if(hitLimb)
+            {
+                Transform newLigament = CreateNewLigament(hit);
+
+                if (limbIdentity.IsLastLigament)
+                {
+                    bool newLigamentHasChain = newLigament.TryGetComponent(out LigamentChain newLigamentChain);
+                    Assert.IsTrue(newLigamentHasChain);
+
+                    limbIdentity.LimbController.BuildLimb(newLigamentChain);
+                }
+                else
+                {
+                    MakeLimbRoot(newLigament);
+                }                
+            }            
         }
     }
 
@@ -70,5 +92,22 @@ public class CreatureBuilder : MonoBehaviour
             Instantiate(m_headPrefab, newHeadPosition, Quaternion.identity);
             m_headPlacedInScene = true;
         }
+    }
+
+    private Transform CreateNewLigament(RaycastHit hit)
+    {
+        Transform newLigament = Instantiate(m_boneBase, hit.point, Quaternion.identity);
+        newLigament.SetParent(hit.transform);
+
+        return newLigament;
+    }
+
+    private void MakeLimbRoot(Transform ligament)
+    {
+        LimbController newLimbController = ligament.gameObject.AddComponent<LimbController>();
+        bool newLigamentHasChain = ligament.TryGetComponent(out LigamentChain newLigamentChain);
+        Assert.IsTrue(newLigamentHasChain);
+
+        newLimbController.BuildLimb(newLigamentChain);
     }
 }
