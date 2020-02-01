@@ -168,7 +168,8 @@ public class LimbController : MonoBehaviour
 		Debug.Log($"Limb Extend Target: {angle} ({m_ligamentChains.Count})" );
 #endif
 		
-		Quaternion rotation = Quaternion.AngleAxis(angle, axis);
+		//Quaternion rotation = Quaternion.AngleAxis(angle, axis);
+		Quaternion rotation = Quaternion.AngleAxis(angle, Vector3.right);
 
 		foreach (LigamentChain ligChain in m_ligamentChains)
 		{
