@@ -15,13 +15,11 @@ public class LigamentChain : MonoBehaviour
 	private ConfigurableJoint m_Joint;
 
 	private LigamentChain m_ParentChain = null;
-	private Vector3 m_TargetPosition;
 
 	private void Start()
     {
 		m_Body = GetComponent<Rigidbody>();
 		m_Joint = GetComponent<ConfigurableJoint>();
-
 		UpdateChildren();
 	}
 
@@ -35,8 +33,8 @@ public class LigamentChain : MonoBehaviour
 			{
 				if (chain.m_ParentChain != chain)
 				{
-					DetachFromParentChain();
-					AttachToParentChain(chain);
+					chain.DetachFromParentChain();
+					chain.AttachToParentChain(this);
 				}
 			}
 		}
@@ -44,16 +42,16 @@ public class LigamentChain : MonoBehaviour
 	
     private void Update()
 	{
-		if((m_ParentChain == null && transform.parent != null) || (m_ParentChain != null && transform.parent != m_ParentChain.transform))
+		if ((m_ParentChain == null && transform.parent != null) || (m_ParentChain != null && transform.parent != m_ParentChain.transform))
 		{
 			DetachFromParentChain();
 
-			if (transform.parent != null && transform.parent.TryGetComponent(out LigamentChain parent))
+			if (transform.parent != null && transform.parent.TryGetComponent(out LigamentChain chain))
 			{
-				AttachToParentChain(parent);
+				AttachToParentChain(chain);
 			}
 		}
-    }
+	}
 
 	private void AttachToParentChain(LigamentChain parent)
 	{
@@ -61,9 +59,12 @@ public class LigamentChain : MonoBehaviour
 		if (m_ParentChain == null)
 		{
 			m_ParentChain = parent;
-			m_TargetPosition = parent.m_BoneEnd.localPosition;// - m_Joint.anchor;
-			transform.localPosition = parent.m_BoneEnd.localPosition - m_BoneStart.localPosition;
+			
 			m_Joint.connectedBody = parent.m_Body;
+
+			m_Joint.autoConfigureConnectedAnchor = true;
+			m_Body.position = transform.position = parent.m_BoneEnd.position - m_BoneStart.localPosition;
+			m_Joint.anchor = parent.m_BoneEnd.position - m_Body.position;
 		}
 	}
 
