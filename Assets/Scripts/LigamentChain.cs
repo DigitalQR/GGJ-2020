@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(ConfigurableJoint)), RequireComponent(typeof(Rigidbody))]
+[RequireComponent(typeof(Rigidbody))]
 public class LigamentChain : MonoBehaviour
 {
 	[SerializeField]
@@ -11,9 +11,23 @@ public class LigamentChain : MonoBehaviour
 	[SerializeField]
 	private Transform m_BoneEnd = null;
 
+	[Header("Control")]
+	[SerializeField]
+	private float m_FullResponseSpringiness = 2000.0f;
+
+	[SerializeField]
+	private float m_FullResponseDamper = 0.0f;
+
+	[SerializeField]
+	private float m_NoResponseSpringiness = 100.0f;
+
+	[SerializeField]
+	private float m_NoResponseDamper = 0.0f;
+
 	private Rigidbody m_Body;
 	private ConfigurableJoint m_Joint;
 	private Quaternion m_BaseRotation;
+	private bool m_HasInitalized = false;
 
 	private LigamentChain m_ParentChain = null;
 
@@ -22,8 +36,14 @@ public class LigamentChain : MonoBehaviour
 
 	private void Awake()
 	{
-		m_Body = GetComponent<Rigidbody>();
-		m_Joint = GetComponent<ConfigurableJoint>();
+		if (!m_HasInitalized)
+		{
+			m_HasInitalized = true;
+			m_Body = GetComponent<Rigidbody>();
+			m_Joint = GetComponent<ConfigurableJoint>();
+
+			Debug.AssertFormat(m_Joint != null, "LigamentChain needs joint on init");
+		}
 	}
 
 	private void Start()
@@ -90,6 +110,28 @@ public class LigamentChain : MonoBehaviour
 		}
 	}
 
+	/// <summary>
+	/// Remove all remaining parts from this chain
+	/// </summary>
+	public void DetachChain(bool ragdollChildren)
+	{
+		for (int i = 0; i < transform.childCount; ++i)
+		{
+			Transform child = transform.GetChild(i);
+
+			if (ragdollChildren)
+			{
+				if (child.TryGetComponent(out LigamentChain chain))
+				{
+					chain.DetachFromParentChain();
+					chain.transform.parent = null;
+					Destroy(chain.m_Joint);
+					--i;
+				}
+			}
+		}
+	}
+
 	public void RotateTowards(Quaternion rotation)
 	{
 		Quaternion localSpaceRot = rotation;// Quaternion.Inverse(m_Body.rotation) * rotation;
@@ -128,5 +170,19 @@ public class LigamentChain : MonoBehaviour
 		*/
 
 		//m_Joint.targetRotation = rotation;// m_BaseRotation * rotation;
+	}
+
+	public void SetResponsiveness(float resp)
+	{
+		if (m_Joint != null)
+		{
+			float springiness = Mathf.Lerp(m_NoResponseSpringiness, m_FullResponseSpringiness, resp);
+			float damper = Mathf.Lerp(m_NoResponseDamper, m_FullResponseDamper, resp);
+
+			var drive = m_Joint.slerpDrive;
+			drive.positionSpring = springiness;
+			drive.positionDamper = damper;
+			m_Joint.slerpDrive = drive;
+		}
 	}
 }
