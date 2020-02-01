@@ -10,11 +10,14 @@ public class LigamentChain : MonoBehaviour
 
 	[SerializeField]
 	private Transform m_BoneEnd = null;
-	
+
 	private Rigidbody m_Body;
 	private ConfigurableJoint m_Joint;
 
 	private LigamentChain m_ParentChain = null;
+
+	public Transform BoneStart { get { return m_BoneStart; } }
+	public Transform BoneEnd { get { return m_BoneEnd; } }
 
 	private void Start()
     {
