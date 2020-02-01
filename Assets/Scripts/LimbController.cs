@@ -35,7 +35,7 @@ public class LimbController : MonoBehaviour
 	
     private void Start()
     {
-        BuildLimb(null);
+        //BuildLimb(null);
     }
 
 	public void AssignAction(LimbAction action)

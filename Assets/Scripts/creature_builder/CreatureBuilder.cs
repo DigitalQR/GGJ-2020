@@ -136,20 +136,21 @@ public class CreatureBuilder : MonoBehaviour
         return newLimbController;
     }
         
-    private Transform BuildCreature(Transform head)
+    private Transform BuildCreature(Transform headTemplate)
     {
-        Transform builtCreatureRoot = BuildHead(head);
+        Transform builtCreatureRoot = BuildHead(headTemplate);
         Rigidbody parentRigidNumber = builtCreatureRoot.GetComponent<Rigidbody>();
 
-        int childCount = head.childCount;
+        int childCount = headTemplate.childCount;
         for(int i = 0; i < childCount; i++)
         {
-            Transform child = head.GetChild(i);
-            if(child.TryGetComponent(out Ligament ligament))
+            Transform childTemplate = headTemplate.GetChild(i);
+
+            if(childTemplate.TryGetComponent(out Ligament ligament))
             {
-                Transform newLigament = BuildLigament(child, builtCreatureRoot);
+                Transform newLigament = BuildLigament(childTemplate, builtCreatureRoot);
                 LimbController newLimbController = MakeLimbRoot(newLigament, parentRigidNumber);
-                LigamentChain endJoint = BuildRestOfLimb(child, newLigament);
+                LigamentChain endJoint = BuildRestOfLimb(childTemplate, newLigament);
 
                 newLimbController.BuildLimb(endJoint);
             }
