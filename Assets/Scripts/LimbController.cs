@@ -38,8 +38,10 @@ public class LimbController : MonoBehaviour
 
     private void Start()
     {
-        BuildLimb(null);
+        //BuildLimb(null);
     }
+
+	public int LigamentChainCount { get { return m_ligamentChains.Count; } }
 
 	public Vector3 ArmDirection
 	{
@@ -76,13 +78,16 @@ public class LimbController : MonoBehaviour
 		}
 
 #if GGJ_DEBUG
-		Vector3 midPoint = (transform.position + m_ElbowHandTarget.position) * 0.5f;
-		Debug.DrawLine(transform.position, m_ElbowHandTarget.position, Color.green);
-		Debug.DrawLine(transform.position, m_ElbowArchTarget.position, Color.yellow);
-		Debug.DrawLine(m_ElbowArchTarget.position, m_ElbowHandTarget.position, Color.yellow);
+		if(m_ElbowArchTarget != null)
+		{
+			Vector3 midPoint = (transform.position + m_ElbowHandTarget.position) * 0.5f;
+			Debug.DrawLine(transform.position, m_ElbowHandTarget.position, Color.green);
+			Debug.DrawLine(transform.position, m_ElbowArchTarget.position, Color.yellow);
+			Debug.DrawLine(m_ElbowArchTarget.position, m_ElbowHandTarget.position, Color.yellow);
 
-		Debug.DrawLine(midPoint, m_ElbowArchTarget.position, Color.blue);
-		Debug.DrawLine(midPoint, midPoint + ElbowAxis * 5.0f, Color.red);
+			Debug.DrawLine(midPoint, m_ElbowArchTarget.position, Color.blue);
+			Debug.DrawLine(midPoint, midPoint + ElbowAxis * 5.0f, Color.red);
+		}
 #endif
 	}
 
@@ -99,13 +104,16 @@ public class LimbController : MonoBehaviour
 	/// Assumption made that end is always root and start is always a tree leaf.
 	private void BuildLimb(LigamentChain start, LigamentChain end)
     {
-        Assert.IsNotNull(start, "Build limb start is null.");
+		Assert.IsNotNull(start, "Build limb start is null.");
         Assert.IsNotNull(end, "Build limb end is null.");
 
+		m_ligamentChains.Clear();
+
 		LigamentChain current = end;
+		int count = 0;
 
         // Build limb starting at end going up the chain until we reach this scripts transform.
-        while (current != start)
+        while (current != start && current != null)
 		{
 			bool hasLimbIdentity = current.TryGetComponent(out LimbIdentity limbIdentity);
 			Assert.IsFalse(hasLimbIdentity);
@@ -114,10 +122,13 @@ public class LimbController : MonoBehaviour
 			if (!hasLimbIdentity)
 			{
 				m_ligamentChains.Add(current);
-				current.gameObject.AddComponent<LimbIdentity>();
+				LimbIdentity newLimbIdentity = current.gameObject.AddComponent<LimbIdentity>();
+				newLimbIdentity.LimbController = this;
+				newLimbIdentity.LigamentIndex = count;
 			}
 
 			current = current.transform.parent.GetComponent<LigamentChain>();
+			count++;
         }
 
 		// Work out elbow location
@@ -152,6 +163,9 @@ public class LimbController : MonoBehaviour
 		if (rootHasJoin)
 		{
 			m_ligamentChains.Add(rootJoint);
+			LimbIdentity newLimbIdentity = end.gameObject.AddComponent<LimbIdentity>();
+			newLimbIdentity.LimbController = this;
+			newLimbIdentity.LigamentIndex = count;
 		}
 		m_LimbEnd = end;
 

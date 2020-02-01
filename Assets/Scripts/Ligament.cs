@@ -39,6 +39,11 @@ public class Ligament : MonoBehaviour
 	{
 		get => m_CurrentHealth <= 0.0f;
 	}
+	
+	public bool IsAlive
+	{
+		get => !IsDead;
+	}
 
 	public void ApplyDamage(float amount)
 	{
