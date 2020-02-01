@@ -45,9 +45,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_distanceFromCamera: 15
-  m_headPrefab: {fileID: 1940320084489776700, guid: 15d527ade48b54840a24d514db3b2a51,
+  m_headPrefabTemplate: {fileID: 1940320084489776700, guid: 15d527ade48b54840a24d514db3b2a51,
     type: 3}
-  m_boneBase: {fileID: 1309962569708844023, guid: b7184226923a6ec42897cc05429bc682,
+  m_boneBaseTemplate: {fileID: 1309962569708844023, guid: b7184226923a6ec42897cc05429bc682,
+    type: 3}
+  m_headPrefab: {fileID: 8217479625616278323, guid: a90afcf87e2d90d4d944e262b3ad548b,
+    type: 3}
+  m_boneBase: {fileID: 6001074313792511346, guid: 46c9dbe4b1d6bbb4b856f0d2eeba79fa,
     type: 3}
 --- !u!114 &-6509166257964604258
 MonoBehaviour:
