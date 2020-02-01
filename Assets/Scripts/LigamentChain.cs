@@ -16,13 +16,19 @@ public class LigamentChain : MonoBehaviour
 	private float m_FullResponseSpringiness = 2000.0f;
 
 	[SerializeField]
-	private float m_FullResponseDamper = 0.0f;
-
-	[SerializeField]
 	private float m_NoResponseSpringiness = 100.0f;
 
 	[SerializeField]
+	private float m_FullResponseDamper = 0.0f;
+	
+	[SerializeField]
 	private float m_NoResponseDamper = 0.0f;
+
+	[SerializeField]
+	private float m_FullMassScale = 0.2f;
+
+	[SerializeField]
+	private float m_NoMassScale = 1.0f;
 
 	private Rigidbody m_Body;
 	private ConfigurableJoint m_Joint;
@@ -183,6 +189,8 @@ public class LigamentChain : MonoBehaviour
 			drive.positionSpring = springiness;
 			drive.positionDamper = damper;
 			m_Joint.slerpDrive = drive;
+
+			m_Joint.massScale = Mathf.Lerp(m_NoMassScale, m_FullMassScale, resp);
 		}
 	}
 }

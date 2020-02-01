@@ -258,9 +258,11 @@ MonoBehaviour:
   m_BoneStart: {fileID: 6972761448666176218}
   m_BoneEnd: {fileID: 6001074315092680037}
   m_FullResponseSpringiness: 2000
-  m_FullResponseDamper: 0
   m_NoResponseSpringiness: 400
+  m_FullResponseDamper: 0
   m_NoResponseDamper: 0
+  m_FullMassScale: 1
+  m_NoMassScale: 0.3
 --- !u!114 &7114536270647004630
 MonoBehaviour:
   m_ObjectHideFlags: 0
