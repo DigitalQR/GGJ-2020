@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
-[RequireComponent(typeof(LigamentChain))]
 public class Ligament : MonoBehaviour
 {
 	[SerializeField]
@@ -54,12 +53,12 @@ public class Ligament : MonoBehaviour
 	{
 		if (IsDead)
 		{
-			m_LigamentChain.DetachChain(true);
+			m_LigamentChain?.DetachChain(true);
 			Destroy(gameObject);
 		}
 		else
 		{
-			m_LigamentChain.SetResponsiveness(NormalizeHealth);
+			m_LigamentChain?.SetResponsiveness(NormalizeHealth);
 		}
 	}
 }
