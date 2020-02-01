@@ -15,6 +15,8 @@ public class LimbController : MonoBehaviour
 
     private List<LigamentChain> m_ligamentChains = new List<LigamentChain>();
     
+    public int LimbLength { get { return m_ligamentChains.Count; } }
+
     public void BuildLimb(Transform endJoint)
     {
 #if GGJ_DEBUG
@@ -65,8 +67,13 @@ public class LimbController : MonoBehaviour
         {
             Assert.IsFalse(current.TryGetComponent(out LimbIdentity limbIdentity));
             Assert.IsTrue(current.TryGetComponent(out LigamentChain newJoint));
+            Assert.IsTrue(current.TryGetComponent(out Ligament ligament));
             
+            // Add the ligament to the limb.
             m_ligamentChains.Add(newJoint);
+
+            // Set up the ligament to be part of the limb.
+            ligament.RegisterLimbController(this);
             current.gameObject.AddComponent<LimbIdentity>();
 
             current = current.parent.transform;
