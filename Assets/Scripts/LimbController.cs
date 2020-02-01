@@ -179,7 +179,7 @@ public class LimbController : MonoBehaviour
 		float angle = Mathf.LerpAngle(m_RetractAngle / m_ligamentChains.Count, m_ExtendAngle / m_ligamentChains.Count, target);
 		Vector3 axis = ElbowAxis;
 #if GGJ_DEBUG
-		Debug.Log($"Limb Extend Target: {angle} ({m_ligamentChains.Count})" );
+		//Debug.Log($"Limb Extend Target: {angle} ({m_ligamentChains.Count})" );
 #endif
 		
 		//Quaternion rotation = Quaternion.AngleAxis(angle, axis);
