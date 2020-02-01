@@ -20,12 +20,15 @@ public class LigamentChain : MonoBehaviour
 	public Transform BoneStart { get { return m_BoneStart; } }
 	public Transform BoneEnd { get { return m_BoneEnd; } }
 
-	private void Start()
-    {
+	private void Awake()
+	{
 		m_Body = GetComponent<Rigidbody>();
 		m_Joint = GetComponent<ConfigurableJoint>();
-		m_BaseRotation = transform.localRotation;
+	}
 
+	private void Start()
+    {
+		m_BaseRotation = transform.localRotation;
 		UpdateChildren();
 	}
 
@@ -89,9 +92,12 @@ public class LigamentChain : MonoBehaviour
 
 	public void RotateTowards(Quaternion rotation)
 	{
-		m_Joint.targetRotation = Quaternion.Inverse(transform.localRotation) * rotation * m_BaseRotation;
+		Quaternion localSpaceRot = rotation;// Quaternion.Inverse(m_Body.rotation) * rotation;
+
+		m_Joint.targetRotation = localSpaceRot * m_BaseRotation;// Quaternion.Inverse(transform.localRotation) * rotation * m_BaseRotation;
 		return;
 
+		/*
 		// https://forum.unity.com/threads/quaternion-wizardry-for-configurablejoint.8919/
 
 		// Calculate the rotation expressed by the joint's axis and secondary axis
@@ -119,7 +125,7 @@ public class LigamentChain : MonoBehaviour
 
 		// Set target rotation to our newly calculated rotation
 		m_Joint.targetRotation = resultRotation;
-
+		*/
 
 		//m_Joint.targetRotation = rotation;// m_BaseRotation * rotation;
 	}
