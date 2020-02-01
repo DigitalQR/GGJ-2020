@@ -14,8 +14,7 @@ public class LimbController : MonoBehaviour
     private KeyCode m_keyRetract = KeyCode.None;
 
     private List<LigamentChain> m_ligamentChains = new List<LigamentChain>();
-    
-    public int LimbLength { get { return m_ligamentChains.Count; } }
+    private float m_limbHealth = 1f;
 
     public void BuildLimb(Transform endJoint)
     {
@@ -71,9 +70,6 @@ public class LimbController : MonoBehaviour
             
             // Add the ligament to the limb.
             m_ligamentChains.Add(newJoint);
-
-            // Set up the ligament to be part of the limb.
-            ligament.RegisterLimbController(this);
             current.gameObject.AddComponent<LimbIdentity>();
 
             current = current.parent.transform;
