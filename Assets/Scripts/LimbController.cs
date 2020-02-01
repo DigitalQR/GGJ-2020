@@ -24,6 +24,7 @@ public class LimbController : MonoBehaviour
     private KeyCode m_keyRetract = KeyCode.D;
 
     private List<LigamentChain> m_ligamentChains = new List<LigamentChain>();    
+    private float m_limbHealth = 1f;
 
     public void BindExtendKey(KeyCode keyCode)
     {
@@ -108,7 +109,8 @@ public class LimbController : MonoBehaviour
 		{
 			bool hasLimbIdentity = current.TryGetComponent(out LimbIdentity limbIdentity);
 			Assert.IsFalse(hasLimbIdentity);
-
+            Assert.IsTrue(current.TryGetComponent(out Ligament ligament));
+			
 			if (!hasLimbIdentity)
 			{
 				m_ligamentChains.Add(current);
